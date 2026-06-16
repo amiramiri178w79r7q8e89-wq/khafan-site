@@ -27,18 +27,21 @@ try {
     }
   );
 
+  if (!res.ok) {
+    throw new Error("Server Error");
+  }
+
   const data = await res.json();
 
   localStorage.setItem("userId", data.id);
 
-  alert("شماره ثبت شد");
+  alert("نسخه جدید V2 - شماره در دیتابیس ذخیره شد");
 
-  // بعداً صفحه کد را اینجا باز می‌کنیم
-  // navigate("/code");
+  console.log("User Saved:", data);
 
 } catch (err) {
   console.error(err);
-  alert("خطا در اتصال به سرور");
+  alert("خطا در اتصال به Render");
 }
 ```
 
@@ -51,6 +54,7 @@ return ( <div className="cyber"> <div className="overlay"></div>
     <h2>ثبت شماره موبایل</h2>
 
     <input
+      type="tel"
       value={phone}
       onChange={handlePhone}
       placeholder="09xxxxxxxxx"
