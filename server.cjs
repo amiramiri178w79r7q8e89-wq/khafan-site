@@ -7,149 +7,69 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-/* =========================
-   CONNECT TO MONGODB
-========================= */
 mongoose.connect(process.env.MONGO_URL)
   .then(() => console.log("MongoDB Connected"))
-  .catch(err => console.log("Mongo Error:", err));
+  .catch(err => console.log(err));
 
-/* =========================
-   USER MODEL
-========================= */
 const UserSchema = new mongoose.Schema({
   phone: String,
   code: String,
-  createdAt: {
-    type: Date,
-    default: Date.now
-  }
+  createdAt: { type: Date, default: Date.now }
 });
 
 const User = mongoose.model("User", UserSchema);
 
-/* =========================
-   SAVE PHONE
-========================= */
+// ارسال شماره + ساخت کد
 app.post("/phone", async (req, res) => {
   try {
     const { phone } = req.body;
 
+    const code = Math.floor(1000 + Math.random() * 9000).toString();
+
     const user = await User.create({
       phone,
-      code: ""
+      code
     });
 
-    res.json({ id: user._id });
+    res.json({
+      id: user._id,
+      message: "code_sent"
+    });
+
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-/* =========================
-   SAVE CODE
-========================= */
-app.put("/code/:id", async (req, res) => {
+// چک کردن کد
+app.post("/verify", async (req, res) => {
   try {
-    const { id } = req.params;
-    const { code } = req.body;
+    const { id, code } = req.body;
 
-    await User.findByIdAndUpdate(id, { code });
+    const user = await User.findById(id);
 
-    res.json({ ok: true });
+    if (!user) return res.status(404).json({ error: "not found" });
+
+    if (user.code === code) {
+      return res.json({ ok: true });
+    } else {
+      return res.json({ ok: false });
+    }
+
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-/* =========================
-   GET USERS (ADMIN DATA)
-========================= */
+// ادمین
 app.get("/users", async (req, res) => {
-  try {
-    const users = await User.find().sort({ createdAt: -1 });
-    res.json(users);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-/* =========================
-   SIMPLE ADMIN PAGE
-========================= */
-app.get("/admin", async (req, res) => {
   const users = await User.find().sort({ createdAt: -1 });
-
-  let html = `
-  <html>
-  <head>
-    <title>Admin Panel</title>
-    <style>
-      body {
-        margin:0;
-        font-family:tahoma;
-        background:#0f172a;
-        color:white;
-      }
-      h1 {
-        text-align:center;
-        padding:20px;
-      }
-      table {
-        width:90%;
-        margin:auto;
-        border-collapse:collapse;
-        background:#111827;
-      }
-      th, td {
-        border:1px solid #334155;
-        padding:10px;
-        text-align:center;
-      }
-      th {
-        background:#1e293b;
-      }
-    </style>
-  </head>
-  <body>
-    <h1>Admin Panel</h1>
-    <table>
-      <tr>
-        <th>Phone</th>
-        <th>Code</th>
-      </tr>
-  `;
-
-  users.forEach(u => {
-    html += `
-      <tr>
-        <td>${u.phone}</td>
-        <td>${u.code}</td>
-      </tr>
-    `;
-  });
-
-  html += `
-    </table>
-  </body>
-  </html>
-  `;
-
-  res.send(html);
+  res.json(users);
 });
 
-/* =========================
-   HOME
-========================= */
 app.get("/", (req, res) => {
-  res.send("Server is running 🚀");
+  res.send("API running");
 });
 
-/* =========================
-   START SERVER
-========================= */
 const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-  console.log("Server running on port", PORT);
-});
+app.listen(PORT, () => console.log("Server running"));

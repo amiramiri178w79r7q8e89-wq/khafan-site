@@ -2,59 +2,70 @@ import { useState } from "react";
 
 export default function Login() {
   const [phone, setPhone] = useState("");
+  const [step, setStep] = useState(1);
+  const [code, setCode] = useState("");
+  const [userId, setUserId] = useState("");
 
-  const handlePhone = (e) => {
-    const value = e.target.value.replace(/\D/g, "").slice(0, 11);
-    setPhone(value);
+  const sendPhone = async () => {
+    const res = await fetch("https://khafan-site.onrender.com/phone", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ phone })
+    });
+
+    const data = await res.json();
+    setUserId(data.id);
+
+    alert("کد از طریق SMS برای شما ارسال شد");
+    setStep(2);
   };
 
-  const submitPhone = async () => {
-    if (!/^09\d{9}$/.test(phone)) {
-      alert("شماره معتبر نیست");
-      return;
-    }
+  const verifyCode = async () => {
+    const res = await fetch("https://khafan-site.onrender.com/verify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: userId, code })
+    });
 
-    try {
-      const res = await fetch(
-        "https://khafan-site.onrender.com/phone",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ phone }),
-        }
-      );
+    const data = await res.json();
 
-      const data = await res.json();
-
-      localStorage.setItem("userId", data.id);
-
-      alert("شماره ثبت شد");
-
-    } catch (err) {
-      console.error(err);
-      alert("خطا در اتصال به سرور");
+    if (data.ok) {
+      alert("ورود موفق 🎉");
+    } else {
+      alert("کد اشتباه است");
     }
   };
 
   return (
-    <div className="cyber">
+    <div className="cyber-bg">
       <div className="overlay"></div>
 
-      <div className="hero-card">
-        <h2>ثبت شماره موبایل</h2>
+      <div className="card">
 
-        <input
-          type="tel"
-          value={phone}
-          onChange={handlePhone}
-          placeholder="09xxxxxxxxx"
-        />
+        {step === 1 && (
+          <>
+            <h2>شماره موبایل</h2>
+            <input
+              placeholder="09xxxxxxxxx"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+            />
+            <button onClick={sendPhone}>ارسال کد</button>
+          </>
+        )}
 
-        <button className="purple-btn" onClick={submitPhone}>
-          ارسال کد
-        </button>
+        {step === 2 && (
+          <>
+            <h2>کد را وارد کنید</h2>
+            <input
+              placeholder="کد 4 رقمی"
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
+            />
+            <button onClick={verifyCode}>تایید</button>
+          </>
+        )}
+
       </div>
     </div>
   );
