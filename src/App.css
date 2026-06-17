@@ -1,7 +1,7 @@
 body {
   margin: 0;
   font-family: sans-serif;
-  background: linear-gradient(135deg, #6a11cb, #ffffff);
+  background: #0b0014;
 }
 
 .page {
@@ -9,36 +9,36 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
+  overflow: hidden;
 }
 
 .bg {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle at top, #6a11cb, #ffffff);
-  animation: moveBg 8s infinite alternate;
-  z-index: -1;
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, #7c3aed, #000);
+  animation: move 8s infinite alternate;
 }
 
-@keyframes moveBg {
-  from { filter: hue-rotate(0deg); }
-  to { filter: hue-rotate(30deg); }
+@keyframes move {
+  0% { transform: translate(-20%, -20%); }
+  100% { transform: translate(20%, 20%); }
 }
 
 .card {
+  position: relative;
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
   width: 320px;
-  background: rgba(255,255,255,0.9);
-  padding: 25px;
-  border-radius: 20px;
   text-align: center;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  z-index: 2;
 }
 
 .img {
-  width: 160px;
-  height: 160px;
-  object-fit: cover;
-  border-radius: 15px;
+  width: 140px;
+  border-radius: 10px;
   margin-bottom: 10px;
 }
 
@@ -46,23 +46,17 @@ input {
   width: 100%;
   padding: 10px;
   margin-top: 10px;
-  border-radius: 10px;
+  border-radius: 8px;
   border: 1px solid #ccc;
-  text-align: center;
 }
 
 button {
   margin-top: 10px;
   width: 100%;
   padding: 10px;
-  border: none;
-  border-radius: 10px;
-  background: #6a11cb;
+  background: #7c3aed;
   color: white;
+  border: none;
+  border-radius: 8px;
   cursor: pointer;
-  transition: 0.3s;
-}
-
-button:hover {
-  background: #4b0ea3;
 }
