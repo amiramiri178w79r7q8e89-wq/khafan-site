@@ -1,126 +1,156 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Register() {
   const [step, setStep] = useState(0);
   const [phone, setPhone] = useState("");
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
-  const [msg, setMsg] = useState("");
 
-  const click = () => {
-    const audio = new Audio("/click.mp3");
-    audio.volume = 0.3;
-    audio.play();
-  };
-
-  const typeText = (text, cb) => {
-    let i = 0;
-    cb("");
-    const interval = setInterval(() => {
-      cb(text.slice(0, i));
-      i++;
-      if (i > text.length) clearInterval(interval);
-    }, 25);
-  };
-
-  const start = () => {
-    click();
-    setStep(1);
+  const onlyNumbers = (value, max) => {
+    return value.replace(/\D/g, "").slice(0, max);
   };
 
   const sendPhone = () => {
-    if (phone.length !== 11) {
-      typeText("شماره نامعتبر است", setMsg);
-      return;
-    }
+    if (phone.length !== 11 || !phone.startsWith("09")) return;
 
-    click();
     setLoading(true);
 
     setTimeout(() => {
       setLoading(false);
-      typeText("کد تایید از طریق پیامک برای شما ارسال شد...", setMsg);
       setStep(2);
-    }, 2000);
+    }, 2500);
   };
 
-  const verify = () => {
-    click();
+  const verifyCode = () => {
+    if (code.length < 4) return;
+
     setLoading(true);
 
     setTimeout(() => {
       setLoading(false);
       setStep(3);
-    }, 2000);
+    }, 2500);
   };
 
   return (
     <div className="container">
 
-      {step === 0 && (
-        <motion.div
-          className="card"
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-        >
-          <h1 className="title">GTA ONLINE</h1>
-          <p className="subtitle">MISSION LOGIN START</p>
-          <button onClick={start}>START MISSION</button>
-        </motion.div>
-      )}
+      <AnimatePresence mode="wait">
 
-      {step === 1 && (
-        <motion.div className="card"
-          initial={{ x: -200, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-        >
-          <h2>ENTER PHONE</h2>
-          <input
-            value={phone}
-            placeholder="09XXXXXXXXX"
-            onChange={(e) =>
-              setPhone(e.target.value.replace(/[^0-9]/g, ""))
-            }
-            maxLength={11}
-          />
-          <button onClick={sendPhone}>SEND CODE</button>
-          <p className="msg">{msg}</p>
-        </motion.div>
-      )}
+        {step === 0 && (
+          <motion.div
+            key="start"
+            className="card"
+            initial={{ opacity: 0, scale: 0.7 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <h1 className="title">ورود به بازی</h1>
 
-      {step === 2 && (
-        <motion.div className="card"
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-        >
-          <h2>ENTER CODE</h2>
-          <input
-            value={code}
-            onChange={(e) =>
-              setCode(e.target.value.replace(/[^0-9]/g, ""))
-            }
-            maxLength={6}
-          />
-          <button onClick={verify}>VERIFY</button>
-          <p className="msg">{msg}</p>
-        </motion.div>
-      )}
+            <img
+              src="/logo.png"
+              className="logo"
+              alt=""
+            />
 
-      {step === 3 && (
-        <motion.div className="card"
-          initial={{ scale: 1.5, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-        >
-          <h2 className="glitch">ثبت نام شما انجام شد</h2>
-          <p>در حال ورود به بازی...</p>
-          <div className="loader"></div>
-        </motion.div>
-      )}
+            <button
+              className="btn"
+              onClick={() => setStep(1)}
+            >
+              ثبت نام
+            </button>
+          </motion.div>
+        )}
+
+        {step === 1 && (
+          <motion.div
+            key="phone"
+            className="card"
+            initial={{ x: 200, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+          >
+            <h2>شماره موبایل</h2>
+
+            <input
+              type="tel"
+              value={phone}
+              maxLength={11}
+              placeholder="09928532443"
+              onChange={(e) =>
+                setPhone(onlyNumbers(e.target.value, 11))
+              }
+            />
+
+            <button
+              className="btn"
+              onClick={sendPhone}
+            >
+              ارسال کد
+            </button>
+          </motion.div>
+        )}
+
+        {step === 2 && (
+          <motion.div
+            key="code"
+            className="card"
+            initial={{ x: -200, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+          >
+            <h2>کد تایید را وارد کنید</h2>
+
+            <p className="smsText">
+              کد از طریق پیامک برای شما ارسال شد
+            </p>
+
+            <input
+              value={code}
+              maxLength={6}
+              placeholder="کد تایید"
+              onChange={(e) =>
+                setCode(onlyNumbers(e.target.value, 6))
+              }
+            />
+
+            <button
+              className="btn"
+              onClick={verifyCode}
+            >
+              تایید
+            </button>
+          </motion.div>
+        )}
+
+        {step === 3 && (
+          <motion.div
+            key="done"
+            className="card"
+            initial={{ scale: 1.4, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+          >
+            <h2 className="success">
+              ثبت نام شما انجام شد
+            </h2>
+
+            <div className="typing">
+              در حال ورود به بازی...
+            </div>
+
+            <div className="loader"></div>
+          </motion.div>
+        )}
+
+      </AnimatePresence>
 
       {loading && (
         <div className="overlay">
-          <div className="loader"></div>
+          <div>
+            <div className="loader"></div>
+            <div className="loadingText">
+              در حال پردازش...
+            </div>
+          </div>
         </div>
       )}
     </div>
