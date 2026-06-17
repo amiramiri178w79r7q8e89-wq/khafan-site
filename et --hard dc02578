@@ -1,0 +1,27 @@
+[33md27e92a[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m fix sounds
+[33mdc02578[m add sounds
+[33mf04ad5b[m fix api
+[33mbabba32[m debug api
+[33m1eee4d6[m save phone and code
+[33me1a47d2[m fix build + register flow + admin
+[33m4219f76[m fix build + register flow + admin
+[33ma70c754[m fix build + register flow + admin
+[33m231bc27[m fix build + register flow + admin
+[33mf48694d[m fix build + register flow + admin
+[33m88c00c2[m fix build + register flow + admin
+[33m836914f[m fix build + register flow + admin
+[33m9ef6a65[m fix register ui + correct structure
+[33m6700d91[m fix ui register + routing + fix structure
+[33m9edd33f[m modern ui + register flow fix
+[33m711e0be[m fix ui home page
+[33m6f5f4ae[m fix build + register flow + admin
+[33m3b88888[m fix build + register flow + admin
+[33ma78636d[m fix build + register flow + admin
+[33mab00ac4[m fix routes + register page
+[33meb45a0a[m fix login
+[33m16a8730[m fix login build
+[33m2c158e7[m vercel test
+[33mca55dea[m connect frontend to api
+[33ma910551[m full backend fix
+[33m748ee9e[m mongodb connected
+[33m12e488d[m mongodb update

