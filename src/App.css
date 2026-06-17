@@ -1,7 +1,7 @@
 body {
   margin: 0;
   font-family: sans-serif;
-  background: #0b0014;
+  background: linear-gradient(135deg, #6a11cb, #ffffff);
 }
 
 .page {
@@ -9,54 +9,44 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  position: relative;
-  overflow: hidden;
-}
-
-.bg {
-  position: absolute;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, #7c3aed, #000);
-  animation: move 8s infinite alternate;
-}
-
-@keyframes move {
-  0% { transform: translate(-20%, -20%); }
-  100% { transform: translate(20%, 20%); }
 }
 
 .card {
-  position: relative;
   background: white;
-  padding: 20px;
-  border-radius: 15px;
+  padding: 30px;
+  border-radius: 20px;
   width: 320px;
   text-align: center;
-  z-index: 2;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
 }
 
 .img {
-  width: 140px;
-  border-radius: 10px;
-  margin-bottom: 10px;
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 15px;
+  margin-bottom: 15px;
 }
 
 input {
   width: 100%;
   padding: 10px;
   margin-top: 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
+  border-radius: 10px;
+  border: 1px solid #ddd;
 }
 
 button {
-  margin-top: 10px;
   width: 100%;
+  margin-top: 10px;
   padding: 10px;
-  background: #7c3aed;
-  color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
+  background: #6a11cb;
+  color: white;
   cursor: pointer;
+}
+
+button:hover {
+  background: #520db3;
 }
