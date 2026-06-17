@@ -1,45 +1,98 @@
 body {
   margin: 0;
-  font-family: sans-serif;
+  font-family: Arial;
+  overflow: hidden;
 }
 
+/* 🌈 BACKGROUND ANIMATION */
 .bg {
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: radial-gradient(circle at top, #7c3aed, #111);
+  background: radial-gradient(circle at 20% 20%, #7c3aed, transparent 40%),
+              radial-gradient(circle at 80% 30%, #00f5ff, transparent 40%),
+              radial-gradient(circle at 50% 80%, #ff00ff, transparent 40%),
+              #0b0014;
+  animation: moveBg 10s infinite alternate;
 }
 
+@keyframes moveBg {
+  0% { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(60deg); }
+}
+
+/* 🧠 GLASS CARD */
 .card {
-  width: 320px;
+  width: 340px;
   padding: 25px;
-  border-radius: 20px;
+  border-radius: 18px;
   background: rgba(255,255,255,0.08);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(12px);
   color: white;
+  text-align: center;
+  box-shadow: 0 0 40px rgba(124,58,237,0.5);
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%,100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+/* ✨ INPUT */
+.input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  margin-top: 10px;
   text-align: center;
 }
 
-input {
+/* 🎮 BUTTON */
+.btn {
   width: 100%;
-  padding: 10px;
-  margin-top: 10px;
-  border-radius: 10px;
+  margin-top: 15px;
+  padding: 12px;
   border: none;
-}
-
-button {
-  width: 100%;
-  margin-top: 10px;
-  padding: 10px;
   border-radius: 10px;
-  border: none;
-  background: #7c3aed;
+  background: linear-gradient(90deg,#7c3aed,#00f5ff);
   color: white;
   cursor: pointer;
+  transition: 0.3s;
 }
 
-button:hover {
-  background: #5b21b6;
+.btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px #7c3aed;
+}
+
+/* 🔄 LOADING SPINNER (Cyber Circle) */
+.loader {
+  width: 60px;
+  height: 60px;
+  border: 4px solid transparent;
+  border-top: 4px solid #00f5ff;
+  border-right: 4px solid #7c3aed;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 20px auto;
+}
+
+@keyframes spin {
+  100% { transform: rotate(360deg); }
+}
+
+/* ⌨️ TYPE EFFECT */
+.typing {
+  overflow: hidden;
+  border-right: .15em solid #00f5ff;
+  white-space: nowrap;
+  animation: typing 2s steps(30) infinite alternate;
+}
+
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
 }

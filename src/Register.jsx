@@ -6,39 +6,33 @@ export default function Register() {
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handlePhoneChange = (e) => {
-    const value = e.target.value.replace(/\D/g, "");
-    if (value.length <= 11) setPhone(value);
-  };
+  const onlyNumber = (v) => v.replace(/\D/g, "");
 
   const sendPhone = () => {
-    if (!phone.startsWith("09") || phone.length !== 11) {
-      alert("شماره معتبر نیست");
-      return;
-    }
+    if (!phone.startsWith("09") || phone.length !== 11) return;
+
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
       setStep(2);
-    }, 1200);
+    }, 1500);
   };
 
-  const verifyCode = () => {
-    if (code.length < 4) return;
-
+  const verify = () => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
       setStep(3);
-    }, 1200);
+    }, 1500);
   };
 
   return (
     <div className="bg">
+
       {/* STEP 0 */}
       {step === 0 && (
         <div className="card">
-          <h1>ورود به بازی</h1>
+          <h2 className="typing">ورود به بازی...</h2>
           <button className="btn" onClick={() => setStep(1)}>
             شروع
           </button>
@@ -48,13 +42,16 @@ export default function Register() {
       {/* STEP 1 */}
       {step === 1 && (
         <div className="card">
-          <h2>شماره موبایل</h2>
+          <h3>شماره موبایل را وارد کنید</h3>
+
           <input
-            value={phone}
-            onChange={handlePhoneChange}
-            placeholder="09xxxxxxxxx"
             className="input"
+            value={phone}
+            onChange={(e) => setPhone(onlyNumber(e.target.value))}
+            maxLength={11}
+            placeholder="09xxxxxxxxx"
           />
+
           <button className="btn" onClick={sendPhone}>
             ارسال کد
           </button>
@@ -64,17 +61,16 @@ export default function Register() {
       {/* STEP 2 */}
       {step === 2 && (
         <div className="card">
-          <h2>کد تایید</h2>
-          <p className="hint">کد از طریق پیامک ارسال شد</p>
+          <h3 className="typing">کد تایید ارسال شد...</h3>
 
           <input
-            value={code}
-            onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
-            placeholder="کد تایید"
             className="input"
+            value={code}
+            onChange={(e) => setCode(onlyNumber(e.target.value))}
+            placeholder="کد تایید"
           />
 
-          <button className="btn" onClick={verifyCode}>
+          <button className="btn" onClick={verify}>
             تایید
           </button>
         </div>
@@ -83,10 +79,20 @@ export default function Register() {
       {/* STEP 3 */}
       {step === 3 && (
         <div className="card">
-          <h2>ثبت نام انجام شد</h2>
-          <p className="hint">در حال ورود به بازی...</p>
+          <h3 className="typing">ثبت نام شما انجام شد</h3>
+          <p>در حال ورود به بازی...</p>
+          <div className="loader"></div>
         </div>
       )}
+
+      {/* LOADING OVERLAY */}
+      {loading && (
+        <div className="card">
+          <div className="loader"></div>
+          <p className="typing">در حال پردازش...</p>
+        </div>
+      )}
+
     </div>
   );
 }
