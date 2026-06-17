@@ -1,62 +1,79 @@
-.page {
+body {
+  margin: 0;
+  font-family: tahoma;
+  background: #05010f;
+  overflow: hidden;
+}
+
+.cyber-bg {
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: tahoma;
-  overflow: hidden;
   position: relative;
-  background: #0b0f1a;
 }
 
-/* background animation */
-.bg {
+/* animated neon background */
+.glow {
   position: absolute;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(45deg, #6d28d9, #0ea5e9, #ec4899);
-  animation: move 10s infinite alternate;
-  filter: blur(80px);
-  opacity: 0.5;
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle, #7c3aed, transparent 60%);
+  filter: blur(90px);
+  animation: float 5s infinite alternate;
 }
 
-@keyframes move {
-  from { transform: translate(-20%, -20%); }
-  to { transform: translate(0%, 0%); }
+@keyframes float {
+  from { transform: translate(-120px, -80px); }
+  to { transform: translate(120px, 80px); }
 }
 
-.card {
-  z-index: 2;
-  width: 320px;
-  padding: 20px;
-  background: rgba(0,0,0,0.6);
-  backdrop-filter: blur(10px);
+/* card */
+.glass-card {
+  width: 370px;
+  padding: 25px;
   border-radius: 20px;
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(18px);
   text-align: center;
   color: white;
+  border: 1px solid rgba(255,255,255,0.15);
+  box-shadow: 0 0 40px rgba(124,58,237,0.4);
 }
 
-.img {
+/* image */
+.hero-img {
   width: 100%;
+  height: 180px;
+  object-fit: cover;
   border-radius: 15px;
   margin-bottom: 15px;
 }
 
+/* input */
 input {
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   margin: 10px 0;
   border-radius: 10px;
   border: none;
   outline: none;
+  background: rgba(255,255,255,0.1);
+  color: white;
 }
 
+/* button */
 button {
   width: 100%;
-  padding: 10px;
-  background: #7c3aed;
-  color: white;
+  padding: 12px;
   border: none;
   border-radius: 10px;
+  background: linear-gradient(45deg, #7c3aed, #ec4899);
+  color: white;
+  font-weight: bold;
   cursor: pointer;
+}
+
+button:hover {
+  transform: scale(1.03);
 }
