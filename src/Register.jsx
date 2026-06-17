@@ -1,98 +1,101 @@
 import { useState } from "react";
 
 export default function Register() {
-  const [step, setStep] = useState(0);
+  const [step, setStep] = useState(1);
   const [phone, setPhone] = useState("");
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
 
-  const onlyNumber = (v) => v.replace(/\D/g, "");
-
-  const sendPhone = () => {
-    if (!phone.startsWith("09") || phone.length !== 11) return;
-
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setStep(2);
-    }, 1500);
+  const playClick = () => {
+    const audio = new Audio("/click.mp3");
+    audio.play();
   };
 
-  const verify = () => {
+  const handleStart = () => {
+    playClick();
+    setStep(2);
+  };
+
+  const sendPhone = () => {
+    if (phone.length !== 11) {
+      setMessage("شماره معتبر نیست");
+      return;
+    }
+
     setLoading(true);
+    playClick();
+
     setTimeout(() => {
       setLoading(false);
+      setMessage("کد تأیید از طریق پیامک ارسال شد");
       setStep(3);
-    }, 1500);
+    }, 2000);
+  };
+
+  const verifyCode = () => {
+    setLoading(true);
+    playClick();
+
+    setTimeout(() => {
+      setLoading(false);
+      setMessage("ثبت نام شما انجام شد / در حال ورود به بازی...");
+      setStep(4);
+    }, 2000);
   };
 
   return (
-    <div className="bg">
+    <div className="container">
 
-      {/* STEP 0 */}
-      {step === 0 && (
-        <div className="card">
-          <h2 className="typing">ورود به بازی...</h2>
-          <button className="btn" onClick={() => setStep(1)}>
-            شروع
-          </button>
-        </div>
-      )}
-
-      {/* STEP 1 */}
       {step === 1 && (
         <div className="card">
-          <h3>شماره موبایل را وارد کنید</h3>
-
-          <input
-            className="input"
-            value={phone}
-            onChange={(e) => setPhone(onlyNumber(e.target.value))}
-            maxLength={11}
-            placeholder="09xxxxxxxxx"
-          />
-
-          <button className="btn" onClick={sendPhone}>
-            ارسال کد
-          </button>
+          <h1>ورود به بازی</h1>
+          <button onClick={handleStart}>شروع</button>
         </div>
       )}
 
-      {/* STEP 2 */}
       {step === 2 && (
         <div className="card">
-          <h3 className="typing">کد تایید ارسال شد...</h3>
+          <h2>شماره موبایل</h2>
 
           <input
-            className="input"
-            value={code}
-            onChange={(e) => setCode(onlyNumber(e.target.value))}
-            placeholder="کد تایید"
+            value={phone}
+            placeholder="09xxxxxxxxx"
+            onChange={(e) => {
+              const val = e.target.value.replace(/[^0-9]/g, "");
+              setPhone(val);
+            }}
+            maxLength={11}
           />
 
-          <button className="btn" onClick={verify}>
-            تایید
-          </button>
+          <button onClick={sendPhone}>ثبت</button>
+          <p>{message}</p>
         </div>
       )}
 
-      {/* STEP 3 */}
       {step === 3 && (
         <div className="card">
-          <h3 className="typing">ثبت نام شما انجام شد</h3>
-          <p>در حال ورود به بازی...</p>
-          <div className="loader"></div>
+          <h2>کد تایید را وارد کنید</h2>
+
+          <input
+            value={code}
+            onChange={(e) => setCode(e.target.value.replace(/[^0-9]/g, ""))}
+            maxLength={6}
+          />
+
+          <button onClick={verifyCode}>تایید</button>
+          <p>{message}</p>
         </div>
       )}
 
-      {/* LOADING OVERLAY */}
-      {loading && (
+      {step === 4 && (
         <div className="card">
+          <h2 className="glitch">در حال ورود به بازی...</h2>
           <div className="loader"></div>
-          <p className="typing">در حال پردازش...</p>
         </div>
       )}
 
+      {loading && <div className="overlay">Loading...</div>}
     </div>
   );
 }
