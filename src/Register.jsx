@@ -1,101 +1,120 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
 
 export default function Register() {
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(0);
   const [phone, setPhone] = useState("");
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
+  const [msg, setMsg] = useState("");
 
-  const playClick = () => {
-    const audio = new Audio("/click.mp3");
-    audio.play();
+  const click = () => {
+    new Audio("/click.mp3").play();
   };
 
-  const handleStart = () => {
-    playClick();
-    setStep(2);
+  const startGame = () => {
+    click();
+    setStep(1);
   };
 
   const sendPhone = () => {
     if (phone.length !== 11) {
-      setMessage("شماره معتبر نیست");
+      setMsg("شماره اشتباه است");
       return;
     }
 
+    click();
     setLoading(true);
-    playClick();
 
     setTimeout(() => {
       setLoading(false);
-      setMessage("کد تأیید از طریق پیامک ارسال شد");
-      setStep(3);
+      setMsg("کد تایید از طریق پیامک ارسال شد");
+      setStep(2);
     }, 2000);
   };
 
   const verifyCode = () => {
+    click();
     setLoading(true);
-    playClick();
 
     setTimeout(() => {
       setLoading(false);
-      setMessage("ثبت نام شما انجام شد / در حال ورود به بازی...");
-      setStep(4);
+      setStep(3);
     }, 2000);
   };
 
   return (
     <div className="container">
 
-      {step === 1 && (
-        <div className="card">
-          <h1>ورود به بازی</h1>
-          <button onClick={handleStart}>شروع</button>
-        </div>
+      {/* START SCREEN */}
+      {step === 0 && (
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          className="card"
+        >
+          <h1 className="glow">GTA LOGIN</h1>
+          <button onClick={startGame}>START</button>
+        </motion.div>
       )}
 
-      {step === 2 && (
-        <div className="card">
+      {/* PHONE */}
+      {step === 1 && (
+        <motion.div className="card"
+          initial={{ x: -200, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+        >
           <h2>شماره موبایل</h2>
 
           <input
             value={phone}
             placeholder="09xxxxxxxxx"
-            onChange={(e) => {
-              const val = e.target.value.replace(/[^0-9]/g, "");
-              setPhone(val);
-            }}
+            onChange={(e) =>
+              setPhone(e.target.value.replace(/[^0-9]/g, ""))
+            }
             maxLength={11}
           />
 
-          <button onClick={sendPhone}>ثبت</button>
-          <p>{message}</p>
-        </div>
+          <button onClick={sendPhone}>ارسال کد</button>
+          <p>{msg}</p>
+        </motion.div>
       )}
 
-      {step === 3 && (
-        <div className="card">
+      {/* OTP */}
+      {step === 2 && (
+        <motion.div className="card"
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+        >
           <h2>کد تایید را وارد کنید</h2>
 
           <input
             value={code}
-            onChange={(e) => setCode(e.target.value.replace(/[^0-9]/g, ""))}
+            onChange={(e) =>
+              setCode(e.target.value.replace(/[^0-9]/g, ""))
+            }
             maxLength={6}
           />
 
           <button onClick={verifyCode}>تایید</button>
-          <p>{message}</p>
-        </div>
+          <p>{msg}</p>
+        </motion.div>
       )}
 
-      {step === 4 && (
-        <div className="card">
-          <h2 className="glitch">در حال ورود به بازی...</h2>
+      {/* ENTER GAME */}
+      {step === 3 && (
+        <motion.div
+          className="card"
+          initial={{ scale: 1.5, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+        >
+          <h2 className="glitch">ثبت نام شما انجام شد</h2>
+          <p>در حال ورود به بازی...</p>
           <div className="loader"></div>
-        </div>
+        </motion.div>
       )}
 
-      {loading && <div className="overlay">Loading...</div>}
+      {loading && <div className="overlay">LOADING...</div>}
     </div>
   );
 }
