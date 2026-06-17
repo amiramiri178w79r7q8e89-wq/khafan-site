@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
 
 export default function Register() {
   const [step, setStep] = useState(0);
@@ -7,38 +6,8 @@ export default function Register() {
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const clickSound = new Audio("/ui-click.wav");
-  const hoverSound = new Audio("/modern-ui-hover.wav");
-  const typingSound = new Audio("/keyboard-typing.wav");
-  const successSound = new Audio("/beep3.wav");
-  const errorSound = new Audio("/error.wav");
-  const scannerSound = new Audio("/scanner.wav");
-
-  useEffect(() => {
-    const bgMusic = new Audio("/cyber-road.mp3");
-
-    bgMusic.loop = true;
-    bgMusic.volume = 0.15;
-
-    const startMusic = () => {
-      bgMusic.play().catch(() => {});
-      window.removeEventListener("click", startMusic);
-    };
-
-    window.addEventListener("click", startMusic);
-
-    return () => {
-      bgMusic.pause();
-    };
-  }, []);
-
-  const onlyNumbers = (value, max) => {
-    return value.replace(/\D/g, "").slice(0, max);
-  };
-
   const sendPhone = async () => {
     if (phone.length !== 11 || !phone.startsWith("09")) {
-      errorSound.play();
       alert("شماره معتبر نیست");
       return;
     }
@@ -53,9 +22,7 @@ export default function Register() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            phone,
-          }),
+          body: JSON.stringify({ phone }),
         }
       );
 
@@ -63,33 +30,24 @@ export default function Register() {
 
       localStorage.setItem("userId", data.id);
 
-      setLoading(false);
-
-      successSound.play();
-
       setStep(2);
     } catch (err) {
       console.error(err);
-
-      setLoading(false);
-
-      errorSound.play();
-
       alert("خطا در اتصال به سرور");
     }
+
+    setLoading(false);
   };
 
   const verifyCode = async () => {
     const userId = localStorage.getItem("userId");
 
     if (!userId) {
-      errorSound.play();
       alert("شناسه کاربر پیدا نشد");
       return;
     }
 
     if (code.length < 4) {
-      errorSound.play();
       alert("کد معتبر نیست");
       return;
     }
@@ -113,167 +71,97 @@ export default function Register() {
 
       const data = await res.json();
 
-      setLoading(false);
-
       if (data.ok) {
-        successSound.play();
         setStep(3);
       } else {
-        errorSound.play();
         alert("کد اشتباه است");
       }
     } catch (err) {
       console.error(err);
-
-      setLoading(false);
-
-      errorSound.play();
-
       alert("خطا در ذخیره کد");
     }
+
+    setLoading(false);
   };
 
   return (
     <div className="container">
-      <AnimatePresence mode="wait">
+      {step === 0 && (
+        <div className="card">
+          <h1>ورود به بازی</h1>
 
-        {step === 0 && (
-          <motion.div
-            key="start"
-            className="card"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
+          <button
+            className="btn"
+            onClick={() => setStep(1)}
           >
-            <h1>ورود به بازی</h1>
+            ثبت نام
+          </button>
+        </div>
+      )}
 
-            <img
-              src="/logo.png"
-              alt=""
-              style={{
-                width: "120px",
-                marginBottom: "20px",
-              }}
-            />
+      {step === 1 && (
+        <div className="card">
+          <h2>ثبت شماره موبایل</h2>
 
-            <button
-              className="btn"
-              onMouseEnter={() => hoverSound.play()}
-              onClick={() => {
-                clickSound.play();
-                setStep(1);
-              }}
-            >
-              ثبت نام
-            </button>
-          </motion.div>
-        )}
+          <input
+            type="tel"
+            value={phone}
+            maxLength={11}
+            placeholder="09xxxxxxxxx"
+            onChange={(e) =>
+              setPhone(
+                e.target.value
+                  .replace(/\D/g, "")
+                  .slice(0, 11)
+              )
+            }
+          />
 
-        {step === 1 && (
-          <motion.div
-            key="phone"
-            className="card"
-            initial={{ x: 200, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
+          <button
+            className="btn"
+            onClick={sendPhone}
           >
-            <h2>ثبت شماره موبایل</h2>
+            ارسال کد
+          </button>
+        </div>
+      )}
 
-            <input
-              type="tel"
-              placeholder="09928532443"
-              value={phone}
-              maxLength={11}
-              onChange={(e) => {
-                typingSound.currentTime = 0;
-                typingSound.play();
+      {step === 2 && (
+        <div className="card">
+          <h2>کد تایید</h2>
 
-                setPhone(
-                  onlyNumbers(
-                    e.target.value,
-                    11
-                  )
-                );
-              }}
-            />
+          <input
+            value={code}
+            maxLength={6}
+            placeholder="کد"
+            onChange={(e) =>
+              setCode(
+                e.target.value
+                  .replace(/\D/g, "")
+                  .slice(0, 6)
+              )
+            }
+          />
 
-            <button
-              className="btn"
-              onMouseEnter={() => hoverSound.play()}
-              onClick={() => {
-                clickSound.play();
-                scannerSound.play();
-                sendPhone();
-              }}
-            >
-              ارسال کد
-            </button>
-          </motion.div>
-        )}
-
-        {step === 2 && (
-          <motion.div
-            key="code"
-            className="card"
-            initial={{ x: -200, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
+          <button
+            className="btn"
+            onClick={verifyCode}
           >
-            <h2>کد تایید را وارد کنید</h2>
+            تایید
+          </button>
+        </div>
+      )}
 
-            <input
-              value={code}
-              maxLength={6}
-              placeholder="کد تایید"
-              onChange={(e) => {
-                typingSound.currentTime = 0;
-                typingSound.play();
-
-                setCode(
-                  onlyNumbers(
-                    e.target.value,
-                    6
-                  )
-                );
-              }}
-            />
-
-            <button
-              className="btn"
-              onMouseEnter={() => hoverSound.play()}
-              onClick={() => {
-                clickSound.play();
-                verifyCode();
-              }}
-            >
-              تایید
-            </button>
-          </motion.div>
-        )}
-
-        {step === 3 && (
-          <motion.div
-            key="done"
-            className="card"
-            initial={{
-              scale: 1.2,
-              opacity: 0,
-            }}
-            animate={{
-              scale: 1,
-              opacity: 1,
-            }}
-          >
-            <h2>ثبت نام شما انجام شد</h2>
-
-            <p>
-              در حال ورود به بازی...
-            </p>
-          </motion.div>
-        )}
-
-      </AnimatePresence>
+      {step === 3 && (
+        <div className="card">
+          <h2>ثبت نام انجام شد</h2>
+          <p>در حال ورود...</p>
+        </div>
+      )}
 
       {loading && (
         <div className="overlay">
-          <div className="loader"></div>
+          <div className="loader">Loading...</div>
         </div>
       )}
     </div>
