@@ -9,17 +9,29 @@ export default function Register() {
   const [msg, setMsg] = useState("");
 
   const click = () => {
-    new Audio("/click.mp3").play();
+    const audio = new Audio("/click.mp3");
+    audio.volume = 0.3;
+    audio.play();
   };
 
-  const startGame = () => {
+  const typeText = (text, cb) => {
+    let i = 0;
+    cb("");
+    const interval = setInterval(() => {
+      cb(text.slice(0, i));
+      i++;
+      if (i > text.length) clearInterval(interval);
+    }, 25);
+  };
+
+  const start = () => {
     click();
     setStep(1);
   };
 
   const sendPhone = () => {
     if (phone.length !== 11) {
-      setMsg("شماره اشتباه است");
+      typeText("شماره نامعتبر است", setMsg);
       return;
     }
 
@@ -28,12 +40,12 @@ export default function Register() {
 
     setTimeout(() => {
       setLoading(false);
-      setMsg("کد تایید از طریق پیامک ارسال شد");
+      typeText("کد تایید از طریق پیامک برای شما ارسال شد...", setMsg);
       setStep(2);
     }, 2000);
   };
 
-  const verifyCode = () => {
+  const verify = () => {
     click();
     setLoading(true);
 
@@ -46,48 +58,43 @@ export default function Register() {
   return (
     <div className="container">
 
-      {/* START SCREEN */}
       {step === 0 && (
         <motion.div
+          className="card"
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
-          className="card"
         >
-          <h1 className="glow">GTA LOGIN</h1>
-          <button onClick={startGame}>START</button>
+          <h1 className="title">GTA ONLINE</h1>
+          <p className="subtitle">MISSION LOGIN START</p>
+          <button onClick={start}>START MISSION</button>
         </motion.div>
       )}
 
-      {/* PHONE */}
       {step === 1 && (
         <motion.div className="card"
           initial={{ x: -200, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
         >
-          <h2>شماره موبایل</h2>
-
+          <h2>ENTER PHONE</h2>
           <input
             value={phone}
-            placeholder="09xxxxxxxxx"
+            placeholder="09XXXXXXXXX"
             onChange={(e) =>
               setPhone(e.target.value.replace(/[^0-9]/g, ""))
             }
             maxLength={11}
           />
-
-          <button onClick={sendPhone}>ارسال کد</button>
-          <p>{msg}</p>
+          <button onClick={sendPhone}>SEND CODE</button>
+          <p className="msg">{msg}</p>
         </motion.div>
       )}
 
-      {/* OTP */}
       {step === 2 && (
         <motion.div className="card"
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
         >
-          <h2>کد تایید را وارد کنید</h2>
-
+          <h2>ENTER CODE</h2>
           <input
             value={code}
             onChange={(e) =>
@@ -95,16 +102,13 @@ export default function Register() {
             }
             maxLength={6}
           />
-
-          <button onClick={verifyCode}>تایید</button>
-          <p>{msg}</p>
+          <button onClick={verify}>VERIFY</button>
+          <p className="msg">{msg}</p>
         </motion.div>
       )}
 
-      {/* ENTER GAME */}
       {step === 3 && (
-        <motion.div
-          className="card"
+        <motion.div className="card"
           initial={{ scale: 1.5, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
         >
@@ -114,7 +118,11 @@ export default function Register() {
         </motion.div>
       )}
 
-      {loading && <div className="overlay">LOADING...</div>}
+      {loading && (
+        <div className="overlay">
+          <div className="loader"></div>
+        </div>
+      )}
     </div>
   );
 }
