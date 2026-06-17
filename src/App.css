@@ -1,79 +1,70 @@
 body {
   margin: 0;
   font-family: tahoma;
-  background: #05010f;
-  overflow: hidden;
+  background: #0b0014;
 }
 
-.cyber-bg {
+/* صفحه اصلی */
+.home-bg {
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
+  overflow: hidden;
 }
 
-/* animated neon background */
-.glow {
+/* نور متحرک */
+.home-glow {
   position: absolute;
   width: 700px;
   height: 700px;
-  background: radial-gradient(circle, #7c3aed, transparent 60%);
-  filter: blur(90px);
-  animation: float 5s infinite alternate;
+  background: radial-gradient(circle, #a855f7, transparent 60%);
+  filter: blur(100px);
+  animation: move 6s infinite alternate;
 }
 
-@keyframes float {
+@keyframes move {
   from { transform: translate(-120px, -80px); }
   to { transform: translate(120px, 80px); }
 }
 
-/* card */
-.glass-card {
-  width: 370px;
+/* کارت وسط */
+.home-card {
+  width: 320px;
   padding: 25px;
-  border-radius: 20px;
-  background: rgba(255,255,255,0.08);
-  backdrop-filter: blur(18px);
   text-align: center;
   color: white;
+  background: rgba(255,255,255,0.08);
   border: 1px solid rgba(255,255,255,0.15);
-  box-shadow: 0 0 40px rgba(124,58,237,0.4);
+  backdrop-filter: blur(15px);
+  border-radius: 20px;
+  box-shadow: 0 0 40px rgba(168,85,247,0.4);
 }
 
-/* image */
-.hero-img {
-  width: 100%;
-  height: 180px;
+/* عکس وسط و کوچیک */
+.home-img {
+  width: 140px;
+  height: 140px;
   object-fit: cover;
-  border-radius: 15px;
+  border-radius: 50%;
+  border: 3px solid #a855f7;
   margin-bottom: 15px;
 }
 
-/* input */
-input {
-  width: 100%;
-  padding: 12px;
-  margin: 10px 0;
-  border-radius: 10px;
-  border: none;
-  outline: none;
-  background: rgba(255,255,255,0.1);
-  color: white;
-}
-
-/* button */
+/* دکمه */
 button {
   width: 100%;
   padding: 12px;
+  margin-top: 10px;
   border: none;
-  border-radius: 10px;
-  background: linear-gradient(45deg, #7c3aed, #ec4899);
+  border-radius: 12px;
+  background: linear-gradient(45deg, #a855f7, #ec4899);
   color: white;
   font-weight: bold;
   cursor: pointer;
 }
 
 button:hover {
-  transform: scale(1.03);
+  transform: scale(1.05);
 }

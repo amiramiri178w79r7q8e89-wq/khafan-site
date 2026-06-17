@@ -1,25 +1,27 @@
 import { Link } from "react-router-dom";
-import hero from "./assets/hero.png";
 
 export default function Home() {
   return (
-    <div className="cyber">
-      <div className="overlay"></div>
+    <div className="home-bg">
 
-      <div className="hero-card">
-        <img src={hero} alt="" className="hero-image" />
+      <div className="home-glow"></div>
 
-        <h1>ورود به بازی</h1>
+      <div className="home-card">
 
-        <p>
-          برای ورود و دریافت کد وارد مرحله ثبت نام شوید
-        </p>
+        {/* عکس وسط */}
+        <img
+          className="home-img"
+          src="https://fi1-ph.ypncdn.com/videos/202505/02/468061265/original/(m=eaSaaTbWx)(mh=ZYcC24OaVFTpvG-v)3.jpg"
+          alt=""
+        />
+
+        <h1>🎮 ورود به بازی</h1>
+        <p>برای شروع وارد ثبت نام شوید</p>
 
         <Link to="/register">
-          <button className="purple-btn">
-            ثبت نام
-          </button>
+          <button>ثبت نام</button>
         </Link>
+
       </div>
     </div>
   );
