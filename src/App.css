@@ -4,8 +4,8 @@ body {
   background: #0b0014;
 }
 
-/* صفحه اصلی */
-.home-bg {
+/* صفحه */
+.home {
   height: 100vh;
   display: flex;
   justify-content: center;
@@ -14,23 +14,23 @@ body {
   overflow: hidden;
 }
 
-/* نور متحرک */
-.home-glow {
+/* بک‌گراند متحرک */
+.bg {
   position: absolute;
-  width: 700px;
-  height: 700px;
+  width: 600px;
+  height: 600px;
   background: radial-gradient(circle, #a855f7, transparent 60%);
-  filter: blur(100px);
+  filter: blur(90px);
   animation: move 6s infinite alternate;
 }
 
 @keyframes move {
-  from { transform: translate(-120px, -80px); }
-  to { transform: translate(120px, 80px); }
+  from { transform: translate(-100px, -50px); }
+  to { transform: translate(100px, 50px); }
 }
 
-/* کارت وسط */
-.home-card {
+/* کارت */
+.card {
   width: 320px;
   padding: 25px;
   text-align: center;
@@ -39,24 +39,25 @@ body {
   border: 1px solid rgba(255,255,255,0.15);
   backdrop-filter: blur(15px);
   border-radius: 20px;
-  box-shadow: 0 0 40px rgba(168,85,247,0.4);
+  z-index: 2;
 }
 
-/* عکس وسط و کوچیک */
-.home-img {
-  width: 140px;
-  height: 140px;
-  object-fit: cover;
+/* 👇 این مشکل تو بود */
+.avatar {
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
+  object-fit: cover;
   border: 3px solid #a855f7;
   margin-bottom: 15px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-/* دکمه */
 button {
   width: 100%;
   padding: 12px;
-  margin-top: 10px;
   border: none;
   border-radius: 12px;
   background: linear-gradient(45deg, #a855f7, #ec4899);
